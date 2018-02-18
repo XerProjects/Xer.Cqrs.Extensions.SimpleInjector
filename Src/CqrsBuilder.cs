@@ -72,7 +72,7 @@ namespace Xer.Cqrs.Extensions.SimpleInjector
                 typeof(CommandHandlerDelegateResolver),
                 Lifestyle.Singleton.CreateRegistration(() =>
                     new CommandHandlerDelegateResolver(
-                        // Combine async and sync command handler resolver.
+                        // Combine container async and sync command handler resolver.
                         CompositeMessageHandlerResolver.Compose(
                             new ContainerCommandAsyncHandlerResolver(new SimpleInjectorContainerAdapter(_container)),
                             new ContainerCommandHandlerResolver(new SimpleInjectorContainerAdapter(_container)))),
@@ -198,7 +198,7 @@ namespace Xer.Cqrs.Extensions.SimpleInjector
 
         public ICqrsBuilder RegisterEventHandlersAttributes(IEnumerable<Assembly> assemblies, Lifestyle lifeStyle)
         {
-            // Get all types that has methods marked with [CommandHandler] attribute.
+            // Get all types that has methods marked with [EventHandler] attribute.
             IEnumerable<Type> allTypes = assemblies.SelectMany(assembly => assembly.GetTypes())
                                                    .Where(type => type.IsClass &&
                                                                   !type.IsAbstract &&
@@ -227,7 +227,7 @@ namespace Xer.Cqrs.Extensions.SimpleInjector
 
         private bool tryGetInstance<T>(out T instance) where T : class
         {
-            // Cast to IServiceProvider so that container will not throw if no resolver collection was registered.
+            // Cast to IServiceProvider so that container will not throw if type is not registered.
             IServiceProvider serviceProvider = _container;
 
             instance = serviceProvider.GetService(typeof(T)) as T;
