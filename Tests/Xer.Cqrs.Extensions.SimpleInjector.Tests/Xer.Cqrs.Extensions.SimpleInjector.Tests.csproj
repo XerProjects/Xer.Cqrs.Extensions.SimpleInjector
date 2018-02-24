@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Src\Xer.Cqrs.Extensions.SimpleInjector.csproj" />
+    <ProjectReference Include="..\..\Src\Xer.Cqrs.Extensions.SimpleInjector\Xer.Cqrs.Extensions.SimpleInjector.csproj" />
   </ItemGroup>
 
 </Project>
