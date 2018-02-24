@@ -7,12 +7,7 @@ namespace SimpleInjector
 {
     public static class SimpleInjectorContainerExtensions
     {
-        public static Container RegisterCqrs(this Container container, Assembly assembly)
-        {
-            return RegisterCqrs(container, new[] { assembly });
-        }
-
-        public static Container RegisterCqrs(this Container container, IEnumerable<Assembly> assemblies)
+        public static Container RegisterCqrs(this Container container, params Assembly[] assemblies)
         {
             RegisterCqrsCore(container)
                 .RegisterCommandHandlers(select => 
