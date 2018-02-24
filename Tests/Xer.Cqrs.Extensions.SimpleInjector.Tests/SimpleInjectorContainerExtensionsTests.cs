@@ -14,12 +14,12 @@ namespace Tests
 {
     public class SimpleInjectorContainerExtensionsTests
     {
-        public class AddCqrsMethods
+        public class RegisterCqrsMethods
         {
             private readonly System.Reflection.Assembly _handlerAssembly = typeof(TestCommand).Assembly;
             private readonly ITestOutputHelper _outputHelper;
 
-            public AddCqrsMethods(ITestOutputHelper outputHelper)
+            public RegisterCqrsMethods(ITestOutputHelper outputHelper)
             {
                 _outputHelper = outputHelper;  
             }
@@ -59,8 +59,8 @@ namespace Tests
             public void ShouldRegisterAllCommandHandlersInAssembly()
             {
                 Container container = new Container();
-                container.RegisterCqrsCore(_handlerAssembly)
-                         .RegisterCommandHandlers(select => select.ByInterface(Lifestyle.Transient));
+                container.RegisterCqrsCore()
+                         .RegisterCommandHandlers(select => select.ByInterface(_handlerAssembly, Lifestyle.Transient));
 
                 container.RegisterSingleton(_outputHelper);
                 container.Verify();
@@ -78,8 +78,8 @@ namespace Tests
             public void ShouldRegisterAllCommandHandlerAttributesInAssembly()
             {
                 Container container = new Container();
-                container.RegisterCqrsCore(_handlerAssembly)
-                         .RegisterCommandHandlers(select => select.ByAttribute(Lifestyle.Transient));
+                container.RegisterCqrsCore()
+                         .RegisterCommandHandlers(select => select.ByAttribute(_handlerAssembly, Lifestyle.Transient));
                 container.RegisterSingleton(_outputHelper);
                 container.Verify();
 
@@ -90,16 +90,19 @@ namespace Tests
                 container.GetInstance<CommandDelegator>().Should().NotBeNull();
                 container.GetInstance<TestCommandHandler>().Should().NotBeNull();
 
-                Action action = () => container.GetInstance<TestEventHandler>();
-                action.Should().Throw<Exception>("because command handlers were not registered."); // Why? This should throw.
+                Action a1 = () => container.GetInstance<ICommandAsyncHandler<TestCommand>>();
+                a1.Should().Throw<Exception>("because command handlers were not registered by interface.");
+
+                Action a2 = () => container.GetInstance<ICommandHandler<TestCommand>>();
+                a2.Should().Throw<Exception>("because command handlers were not registered by interface.");
             }
 
             [Fact]
             public void ShouldRegisterAllEventHandlersInAssembly()
             {
                 Container container = new Container();
-                container.RegisterCqrsCore(_handlerAssembly)
-                         .RegisterEventHandlers(select => select.ByInterface(Lifestyle.Transient));
+                container.RegisterCqrsCore()
+                         .RegisterEventHandlers(select => select.ByInterface(_handlerAssembly, Lifestyle.Transient));
 
                 container.RegisterSingleton(_outputHelper);
                 container.Verify();
@@ -117,8 +120,8 @@ namespace Tests
             public void ShouldRegisterAllEventHandlerAttributesInAssembly()
             {
                 Container container = new Container();
-                container.RegisterCqrsCore(_handlerAssembly)
-                         .RegisterEventHandlers(select => select.ByAttribute(Lifestyle.Transient));
+                container.RegisterCqrsCore()
+                         .RegisterEventHandlers(select => select.ByAttribute(_handlerAssembly, Lifestyle.Transient));
 
                 container.RegisterSingleton(_outputHelper);
                 container.Verify();
@@ -130,8 +133,11 @@ namespace Tests
                 container.GetInstance<EventDelegator>().Should().NotBeNull();
                 container.GetInstance<TestEventHandler>().Should().NotBeNull();
 
-                Action action = () => container.GetInstance<TestCommandHandler>();
-                action.Should().Throw<Exception>("because command handlers were not registered."); // Why? This should throw.
+                Action a1 = () => container.GetInstance<IEventAsyncHandler<TestEvent>>();
+                a1.Should().Throw<Exception>("because event handlers were not registered by interface.");
+
+                Action a2 = () => container.GetInstance<IEventHandler<TestEvent>>();
+                a2.Should().Throw<Exception>("because event handlers were not registered by interface.");
             }
         }
     }

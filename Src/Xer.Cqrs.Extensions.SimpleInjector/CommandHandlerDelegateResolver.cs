@@ -7,7 +7,7 @@ namespace Xer.Cqrs.Extensions.SimpleInjector
     {
         private readonly IMessageHandlerResolver _messageHandlerResolver;
 
-        public CommandHandlerDelegateResolver(IMessageHandlerResolver messageHandlerResolver)
+        internal CommandHandlerDelegateResolver(IMessageHandlerResolver messageHandlerResolver)
         {
             _messageHandlerResolver = messageHandlerResolver;
         }

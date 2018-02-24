@@ -20,20 +20,27 @@ namespace Xer.Cqrs.Extensions.SimpleInjector
     {
         private readonly Container _container;
         private readonly IServiceProvider _serviceProvider;
-        private readonly CqrsCommandHandlerSelector _commandHandlerFinder;
-        private readonly CqrsEventHandlerSelector _eventHandlerFinder;
+        private readonly CqrsCommandHandlerSelector _commandHandlerSelector;
+        private readonly CqrsEventHandlerSelector _eventHandlerSelector;
 
-        public CqrsBuilder(Container container, IEnumerable<Assembly> assemblies)
+        internal CqrsBuilder(Container container)
         {
             _container = container;
             // Cast to IServiceProvider so that container will not throw if type is not registered.
             _serviceProvider = container;
-            _commandHandlerFinder = new CqrsCommandHandlerSelector(container, assemblies);
-            _eventHandlerFinder = new CqrsEventHandlerSelector(container, assemblies);
+            _commandHandlerSelector = new CqrsCommandHandlerSelector(container);
+            _eventHandlerSelector = new CqrsEventHandlerSelector(container);
         }
 
-        public ICqrsBuilder RegisterCommandHandlers(Action<ICqrsCommandHandlerSelector> filter = null)
+        public ICqrsBuilder RegisterCommandHandlers(Action<ICqrsCommandHandlerSelector> selector)
         {
+            if (selector == null)
+            {
+                throw new ArgumentNullException(nameof(selector));
+            }
+
+            selector.Invoke(_commandHandlerSelector);
+
             _container.RegisterSingleton<CommandDelegator>(() =>
             {
                 if (tryGetInstance(out IEnumerable<CommandHandlerDelegateResolver> commandHandlerResolvers))
@@ -51,21 +58,18 @@ namespace Xer.Cqrs.Extensions.SimpleInjector
                 return new CommandDelegator(new SingleMessageHandlerRegistration().BuildMessageHandlerResolver());
             });
 
-            if (filter == null)
-            {
-                // Register all.
-                _commandHandlerFinder.ByInterface().ByAttribute();
-            }
-            else
-            {
-                filter(_commandHandlerFinder);
-            }
-
             return this;
         }
 
-        public ICqrsBuilder RegisterEventHandlers(Action<ICqrsEventHandlerSelector> filter = null)
+        public ICqrsBuilder RegisterEventHandlers(Action<ICqrsEventHandlerSelector> selector)
         {
+            if (selector == null)
+            {
+                throw new ArgumentNullException(nameof(selector));
+            }
+            
+            selector(_eventHandlerSelector);
+
             _container.RegisterSingleton<EventDelegator>(() =>
             {                
                 if (tryGetInstance(out IEnumerable<EventHandlerDelegateResolver> eventHandlerResolvers))
@@ -82,16 +86,6 @@ namespace Xer.Cqrs.Extensions.SimpleInjector
 
                 return new EventDelegator(new SingleMessageHandlerRegistration().BuildMessageHandlerResolver());
             });
-
-            if (filter == null)
-            {
-                // Register all.
-                _eventHandlerFinder.ByInterface().ByAttribute();
-            }
-            else
-            {
-                filter(_eventHandlerFinder);
-            }
 
             return this;
         }

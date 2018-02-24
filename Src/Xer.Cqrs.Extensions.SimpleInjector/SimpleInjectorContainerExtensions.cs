@@ -14,31 +14,25 @@ namespace SimpleInjector
 
         public static Container RegisterCqrs(this Container container, IEnumerable<Assembly> assemblies)
         {
-            RegisterCqrsCore(container, assemblies)
-                .RegisterCommandHandlers()
-                .RegisterEventHandlers();
+            RegisterCqrsCore(container)
+                .RegisterCommandHandlers(select => 
+                    select.ByInterface(assemblies)
+                          .ByAttribute(assemblies))
+                .RegisterEventHandlers(select =>
+                    select.ByInterface(assemblies)
+                          .ByAttribute(assemblies));
 
             return container;
         }
 
-        public static ICqrsBuilder RegisterCqrsCore(this Container container, Assembly assembly)
-        {            
-            return RegisterCqrsCore(container, new[] { assembly });
-        }
-
-        public static ICqrsBuilder RegisterCqrsCore(this Container container, IEnumerable<Assembly> assemblies)
+        public static ICqrsBuilder RegisterCqrsCore(this Container container)
         {
             if (container == null)
             {
                 throw new ArgumentNullException(nameof(container));
             }
 
-            if (assemblies == null)
-            {
-                throw new ArgumentNullException(nameof(assemblies));
-            }
-
-            return new CqrsBuilder(container, assemblies);
+            return new CqrsBuilder(container);
         }
     }
 }
