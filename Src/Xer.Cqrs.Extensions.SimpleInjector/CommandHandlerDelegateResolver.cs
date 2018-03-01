@@ -3,11 +3,11 @@ using Xer.Delegator;
 
 namespace Xer.Cqrs.Extensions.SimpleInjector
 {
-    internal class EventHandlerDelegateResolver : IMessageHandlerResolver
+    internal class CommandHandlerDelegateResolver : IMessageHandlerResolver
     {
         private readonly IMessageHandlerResolver _messageHandlerResolver;
 
-        public EventHandlerDelegateResolver(IMessageHandlerResolver messageHandlerResolver)
+        internal CommandHandlerDelegateResolver(IMessageHandlerResolver messageHandlerResolver)
         {
             _messageHandlerResolver = messageHandlerResolver;
         }

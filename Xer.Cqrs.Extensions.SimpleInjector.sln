@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xer.Cqrs.Extensions.SimpleInjector", "Src\Xer.Cqrs.Extensions.SimpleInjector.csproj", "{867BF932-C181-4459-B8A9-69E60D3E6BC3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xer.Cqrs.Extensions.SimpleInjector", "Src\Xer.Cqrs.Extensions.SimpleInjector\Xer.Cqrs.Extensions.SimpleInjector.csproj", "{867BF932-C181-4459-B8A9-69E60D3E6BC3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xer.Cqrs.Extensions.SimpleInjector.Tests", "Tests\Xer.Cqrs.Extensions.SimpleInjector.Tests.csproj", "{E612BC2E-CEB9-4B0F-BFF4-380A3D2CD6F5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xer.Cqrs.Extensions.SimpleInjector.Tests", "Tests\Xer.Cqrs.Extensions.SimpleInjector.Tests\Xer.Cqrs.Extensions.SimpleInjector.Tests.csproj", "{E612BC2E-CEB9-4B0F-BFF4-380A3D2CD6F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
