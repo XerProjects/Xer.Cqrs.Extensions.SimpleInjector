@@ -1,16 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using SimpleInjector;
-using SimpleInjector.Advanced;
 using Xer.Cqrs.CommandStack;
-using Xer.Cqrs.CommandStack.Attributes;
-using Xer.Cqrs.CommandStack.Resolvers;
 using Xer.Cqrs.EventStack;
-using Xer.Cqrs.EventStack.Attributes;
-using Xer.Cqrs.EventStack.Resolvers;
-using Xer.Delegator;
 using Xer.Delegator.Registrations;
 using Xer.Delegator.Resolvers;
 
