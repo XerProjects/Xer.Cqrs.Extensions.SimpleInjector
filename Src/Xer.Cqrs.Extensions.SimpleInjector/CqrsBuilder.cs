@@ -43,7 +43,7 @@ namespace Xer.Cqrs.Extensions.SimpleInjector
 
             _container.RegisterSingleton<CommandDelegator>(() =>
             {
-                if (tryGetInstance(out IEnumerable<CommandHandlerDelegateResolver> commandHandlerResolvers))
+                if (TryGetInstance(out IEnumerable<CommandHandlerDelegateResolver> commandHandlerResolvers))
                 {
                     CommandHandlerDelegateResolver[] resolverArray = commandHandlerResolvers.ToArray();
 
@@ -72,7 +72,7 @@ namespace Xer.Cqrs.Extensions.SimpleInjector
 
             _container.RegisterSingleton<EventDelegator>(() =>
             {                
-                if (tryGetInstance(out IEnumerable<EventHandlerDelegateResolver> eventHandlerResolvers))
+                if (TryGetInstance(out IEnumerable<EventHandlerDelegateResolver> eventHandlerResolvers))
                 {
                     EventHandlerDelegateResolver[] resolverArray = eventHandlerResolvers.ToArray();
 
@@ -90,7 +90,7 @@ namespace Xer.Cqrs.Extensions.SimpleInjector
             return this;
         }
 
-        private bool tryGetInstance<T>(out T instance) where T : class
+        private bool TryGetInstance<T>(out T instance) where T : class
         {
             instance = _serviceProvider.GetService(typeof(T)) as T;
             if (instance == null)

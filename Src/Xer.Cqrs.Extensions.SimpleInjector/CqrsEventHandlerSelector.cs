@@ -19,38 +19,64 @@ namespace Xer.Cqrs.Extensions.SimpleInjector
             _container = container;
         }
 
-        public ICqrsEventHandlerSelector ByAttribute(Assembly assembly)
+        public ICqrsEventHandlerSelector ByInterface(params Assembly[] assemblies)
         {
-            return ByAttribute(assembly, Lifestyle.Transient);
+            return ByInterface(Lifestyle.Transient, assemblies);
         }
 
-        public ICqrsEventHandlerSelector ByAttribute(Assembly assembly, Lifestyle lifestyle)
+        public ICqrsEventHandlerSelector ByInterface(Lifestyle lifeStyle, params Assembly[] assemblies)
         {
-            return ByAttribute(new[] { assembly }, lifestyle);
-        }
+            if (lifeStyle == null)
+            {
+                throw new ArgumentNullException(nameof(lifeStyle));
+            }
 
-        public ICqrsEventHandlerSelector ByAttribute(IEnumerable<Assembly> assemblies)
-        {
-            return ByAttribute(assemblies, Lifestyle.Transient);
-        }
-
-        public ICqrsEventHandlerSelector ByAttribute(IEnumerable<Assembly> assemblies, Lifestyle lifeStyle)
-        {
             if (assemblies == null)
             {
                 throw new ArgumentNullException(nameof(assemblies));
             }
 
+            IEnumerable<Assembly> distinctAssemblies = assemblies.Distinct();
+
+            _container.Register(typeof(IEventAsyncHandler<>), distinctAssemblies, lifeStyle);
+            _container.Register(typeof(IEventHandler<>), distinctAssemblies, lifeStyle);
+            
+            // Register resolver.
+            _container.AppendToCollection(
+                typeof(EventHandlerDelegateResolver),
+                Lifestyle.Singleton.CreateRegistration(() =>
+                    new EventHandlerDelegateResolver(new ContainerEventHandlerResolver(new SimpleInjectorContainerAdapter(_container))),
+                    _container
+                )
+            );
+
+            return this;
+        }
+
+        public ICqrsEventHandlerSelector ByAttribute(params Assembly[] assemblies)
+        {
+            return ByAttribute(Lifestyle.Transient, assemblies);
+        }
+
+        public ICqrsEventHandlerSelector ByAttribute(Lifestyle lifeStyle, params Assembly[] assemblies)
+        {
             if (lifeStyle == null)
             {
                 throw new ArgumentNullException(nameof(lifeStyle));
             }
+
+            if (assemblies == null)
+            {
+                throw new ArgumentNullException(nameof(assemblies));
+            }
             
-            // Get all types that has methods marked with [EventHandler] attribute.
-            IEnumerable<Type> allTypes = assemblies.SelectMany(assembly => assembly.GetTypes())
+            // Get all types that has methods marked with [EventHandler] attribute from distinct assemblies.
+            IEnumerable<Type> allTypes = assemblies.Distinct()
+                                                   .SelectMany(assembly => assembly.GetTypes())
                                                    .Where(type => type.IsClass &&
                                                                   !type.IsAbstract &&
-                                                                  EventHandlerAttributeMethod.IsFoundInType(type)).ToArray();
+                                                                  EventHandlerAttributeMethod.IsFoundInType(type))
+                                                   .ToArray();
 
             foreach(Type type in allTypes)
             {
@@ -66,48 +92,6 @@ namespace Xer.Cqrs.Extensions.SimpleInjector
                 typeof(EventHandlerDelegateResolver),
                 Lifestyle.Singleton.CreateRegistration(() =>
                     new EventHandlerDelegateResolver(multiMessageHandlerRegistration.BuildMessageHandlerResolver()),
-                    _container
-                )
-            );
-
-            return this;
-        }
-
-        public ICqrsEventHandlerSelector ByInterface(Assembly assembly)
-        {
-            return ByInterface(assembly, Lifestyle.Transient);
-        }
-
-        public ICqrsEventHandlerSelector ByInterface(Assembly assembly, Lifestyle lifestyle)
-        {
-            return ByInterface(new[] { assembly }, lifestyle);
-        }
-
-        public ICqrsEventHandlerSelector ByInterface(IEnumerable<Assembly> assemblies)
-        {
-            return ByInterface(assemblies, Lifestyle.Transient);
-        }
-
-        public ICqrsEventHandlerSelector ByInterface(IEnumerable<Assembly> assemblies, Lifestyle lifeStyle)
-        {
-            if (assemblies == null)
-            {
-                throw new ArgumentNullException(nameof(assemblies));
-            }
-
-            if (lifeStyle == null)
-            {
-                throw new ArgumentNullException(nameof(lifeStyle));
-            }
-
-            _container.Register(typeof(IEventAsyncHandler<>), assemblies, lifeStyle);
-            _container.Register(typeof(IEventHandler<>), assemblies, lifeStyle);
-            
-            // Register resolver.
-            _container.AppendToCollection(
-                typeof(EventHandlerDelegateResolver),
-                Lifestyle.Singleton.CreateRegistration(() =>
-                    new EventHandlerDelegateResolver(new ContainerEventHandlerResolver(new SimpleInjectorContainerAdapter(_container))),
                     _container
                 )
             );

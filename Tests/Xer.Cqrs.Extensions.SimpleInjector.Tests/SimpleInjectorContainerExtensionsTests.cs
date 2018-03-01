@@ -60,7 +60,7 @@ namespace Tests
             {
                 Container container = new Container();
                 container.RegisterCqrsCore()
-                         .RegisterCommandHandlers(select => select.ByInterface(_handlerAssembly, Lifestyle.Transient));
+                         .RegisterCommandHandlers(select => select.ByInterface(_handlerAssembly));
 
                 container.RegisterSingleton(_outputHelper);
                 container.Verify();
@@ -79,7 +79,7 @@ namespace Tests
             {
                 Container container = new Container();
                 container.RegisterCqrsCore()
-                         .RegisterCommandHandlers(select => select.ByAttribute(_handlerAssembly, Lifestyle.Transient));
+                         .RegisterCommandHandlers(select => select.ByAttribute(Lifestyle.Transient, _handlerAssembly));
                 container.RegisterSingleton(_outputHelper);
                 container.Verify();
 
@@ -102,7 +102,7 @@ namespace Tests
             {
                 Container container = new Container();
                 container.RegisterCqrsCore()
-                         .RegisterEventHandlers(select => select.ByInterface(_handlerAssembly, Lifestyle.Transient));
+                         .RegisterEventHandlers(select => select.ByInterface(Lifestyle.Transient, _handlerAssembly));
 
                 container.RegisterSingleton(_outputHelper);
                 container.Verify();
@@ -121,7 +121,7 @@ namespace Tests
             {
                 Container container = new Container();
                 container.RegisterCqrsCore()
-                         .RegisterEventHandlers(select => select.ByAttribute(_handlerAssembly, Lifestyle.Transient));
+                         .RegisterEventHandlers(select => select.ByAttribute(Lifestyle.Transient, _handlerAssembly));
 
                 container.RegisterSingleton(_outputHelper);
                 container.Verify();
