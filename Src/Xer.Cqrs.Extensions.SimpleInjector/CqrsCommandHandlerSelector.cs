@@ -37,13 +37,18 @@ namespace Xer.Cqrs.Extensions.SimpleInjector
                 throw new ArgumentNullException(nameof(assemblies));
             }
 
+            if (assemblies.Length == 0)
+            {
+                throw new ArgumentException("No assemblies were provided.", nameof(assemblies));
+            }
+
             IEnumerable<Assembly> distinctAssemblies = assemblies.Distinct();
 
             _container.Register(typeof(ICommandAsyncHandler<>), distinctAssemblies, lifeStyle);
             _container.Register(typeof(ICommandHandler<>), distinctAssemblies, lifeStyle);
             
             // Register resolver.
-            _container.AppendToCollection(
+            _container.Collections.AppendTo(
                 typeof(CommandHandlerDelegateResolver),
                 Lifestyle.Singleton.CreateRegistration(() =>
                     new CommandHandlerDelegateResolver(
@@ -74,6 +79,11 @@ namespace Xer.Cqrs.Extensions.SimpleInjector
             {
                 throw new ArgumentNullException(nameof(assemblies));
             }
+
+            if (assemblies.Length == 0)
+            {
+                throw new ArgumentException("No assemblies were provided.", nameof(assemblies));
+            }
             
             // Get all types that has methods marked with [CommandHandler] attribute from distinct assemblies.
             IEnumerable<Type> allTypes = assemblies.Distinct()
@@ -83,7 +93,7 @@ namespace Xer.Cqrs.Extensions.SimpleInjector
                                                                   CommandHandlerAttributeMethod.IsFoundInType(type))
                                                    .ToArray();
 
-            foreach(Type type in allTypes)
+            foreach (Type type in allTypes)
             {
                 // Register type as self.
                 _container.Register(type, type, lifeStyle);
@@ -93,7 +103,7 @@ namespace Xer.Cqrs.Extensions.SimpleInjector
             singleMessageHandlerRegistration.RegisterCommandHandlerAttributes(allTypes, _container.GetInstance);
 
             // Register resolver.
-            _container.AppendToCollection(
+            _container.Collections.AppendTo(
                 typeof(CommandHandlerDelegateResolver),
                 Lifestyle.Singleton.CreateRegistration(() =>
                     new CommandHandlerDelegateResolver(singleMessageHandlerRegistration.BuildMessageHandlerResolver()),

@@ -29,7 +29,7 @@ namespace Tests
             {
                 Container container = new Container();
                 container.RegisterCqrs(_handlerAssembly);
-                container.RegisterSingleton(_outputHelper);
+                container.RegisterInstance(_outputHelper);
                 container.Verify();
 
                 var commandHandlerResolvers = container.GetAllInstances<CommandHandlerDelegateResolver>();
@@ -62,7 +62,7 @@ namespace Tests
                 container.RegisterCqrsCore()
                          .RegisterCommandHandlers(select => select.ByInterface(_handlerAssembly));
 
-                container.RegisterSingleton(_outputHelper);
+                container.RegisterInstance(_outputHelper);
                 container.Verify();
 
                 var resolvers = container.GetAllInstances<CommandHandlerDelegateResolver>();
@@ -80,7 +80,7 @@ namespace Tests
                 Container container = new Container();
                 container.RegisterCqrsCore()
                          .RegisterCommandHandlers(select => select.ByAttribute(Lifestyle.Transient, _handlerAssembly));
-                container.RegisterSingleton(_outputHelper);
+                container.RegisterInstance(_outputHelper);
                 container.Verify();
 
                 var resolvers = container.GetAllInstances<CommandHandlerDelegateResolver>();
@@ -104,7 +104,7 @@ namespace Tests
                 container.RegisterCqrsCore()
                          .RegisterEventHandlers(select => select.ByInterface(Lifestyle.Transient, _handlerAssembly));
 
-                container.RegisterSingleton(_outputHelper);
+                container.RegisterInstance(_outputHelper);
                 container.Verify();
 
                 var resolvers = container.GetAllInstances<EventHandlerDelegateResolver>();
@@ -123,7 +123,7 @@ namespace Tests
                 container.RegisterCqrsCore()
                          .RegisterEventHandlers(select => select.ByAttribute(Lifestyle.Transient, _handlerAssembly));
 
-                container.RegisterSingleton(_outputHelper);
+                container.RegisterInstance(_outputHelper);
                 container.Verify();
 
                 var resolvers = container.GetAllInstances<EventHandlerDelegateResolver>();

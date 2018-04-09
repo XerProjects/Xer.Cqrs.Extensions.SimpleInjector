@@ -2,13 +2,18 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>jeyjeyemem;mvput;xerprojects-contributors;</Authors>
+    <Description>SimpleInjector container integration for Xer.Cqrs.</Description>
+    <Copyright>Copyright (c) XerProjects contributors</Copyright>
+    <PackageLicenseUrl>https://github.com/XerProjects/Xer.Cqrs.Extensions.SimpleInjector/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/XerProjects/Xer.Cqrs.Extensions.SimpleInjector</PackageProjectUrl>
+    <PackageTags>simple-injector;container;ioc;ioc-container;cqrs;extension</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SimpleInjector" Version="4.0.12" />
-    <PackageReference Include="Xer.Cqrs.CommandStack" Version="0.2.3" />
-    <PackageReference Include="Xer.Cqrs.EventStack" Version="0.2.3" />
-    <PackageReference Include="Xer.Delegator" Version="0.3.0" />
+    <PackageReference Include="SimpleInjector" Version="4.1.1" />
+    <PackageReference Include="Xer.Cqrs.CommandStack" Version="1.0.0" />
+    <PackageReference Include="Xer.Cqrs.EventStack" Version="1.0.0" />
   </ItemGroup>
 
 </Project>

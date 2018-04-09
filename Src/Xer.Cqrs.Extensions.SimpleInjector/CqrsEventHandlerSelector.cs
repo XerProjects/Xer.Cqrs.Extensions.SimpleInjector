@@ -42,7 +42,7 @@ namespace Xer.Cqrs.Extensions.SimpleInjector
             _container.Register(typeof(IEventHandler<>), distinctAssemblies, lifeStyle);
             
             // Register resolver.
-            _container.AppendToCollection(
+            _container.Collections.AppendTo(
                 typeof(EventHandlerDelegateResolver),
                 Lifestyle.Singleton.CreateRegistration(() =>
                     new EventHandlerDelegateResolver(new ContainerEventHandlerResolver(new SimpleInjectorContainerAdapter(_container))),
@@ -78,7 +78,7 @@ namespace Xer.Cqrs.Extensions.SimpleInjector
                                                                   EventHandlerAttributeMethod.IsFoundInType(type))
                                                    .ToArray();
 
-            foreach(Type type in allTypes)
+            foreach (Type type in allTypes)
             {
                 // Register type as self.
                 _container.Register(type, type, lifeStyle);
@@ -88,7 +88,7 @@ namespace Xer.Cqrs.Extensions.SimpleInjector
             multiMessageHandlerRegistration.RegisterEventHandlerAttributes(allTypes, _container.GetInstance);
 
             // Register resolver.
-            _container.AppendToCollection(
+            _container.Collections.AppendTo(
                 typeof(EventHandlerDelegateResolver),
                 Lifestyle.Singleton.CreateRegistration(() =>
                     new EventHandlerDelegateResolver(multiMessageHandlerRegistration.BuildMessageHandlerResolver()),
