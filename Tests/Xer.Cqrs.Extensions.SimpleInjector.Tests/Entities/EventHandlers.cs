@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Xer.Cqrs.EventStack;
-using Xer.Cqrs.EventStack.Attributes;
+using Xer.Cqrs.EventStack.Extensions.Attributes;
 using Xunit.Abstractions;
 
 namespace Tests.Entities.EventHandlers

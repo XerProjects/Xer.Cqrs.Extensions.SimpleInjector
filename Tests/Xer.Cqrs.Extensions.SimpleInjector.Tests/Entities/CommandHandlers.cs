@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Xer.Cqrs.CommandStack;
-using Xer.Cqrs.CommandStack.Attributes;
+using Xer.Cqrs.CommandStack.Extensions.Attributes;
 using Xunit.Abstractions;
 
 namespace Tests.Entities.CommandHandlers
