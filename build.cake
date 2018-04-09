@@ -284,13 +284,15 @@ public class BuildParameters
         {
             return;
         }
-
+        
         _buildParameters = new BuildParameters(context);
     }
 
     public bool IsAppVeyorBuild => _context.BuildSystem().AppVeyor.IsRunningOnAppVeyor;
 
     public bool IsLocalBuild => _context.BuildSystem().IsLocalBuild;
+
+    public bool IsPullRequest => _context.BuildSystem().AppVeyor.Environment.PullRequest.IsPullRequest;
 
     public string BranchName
     {
@@ -322,5 +324,6 @@ public class BuildParameters
 
     public bool ShouldPublishNuGet => !string.IsNullOrWhiteSpace(NuGetApiKey) 
         && !string.IsNullOrWhiteSpace(NuGetFeed)
-        && (IsMasterBranch || IsHotFixBranch);
+        && (IsMasterBranch || IsHotFixBranch)
+        && !IsPullRequest;
 }
