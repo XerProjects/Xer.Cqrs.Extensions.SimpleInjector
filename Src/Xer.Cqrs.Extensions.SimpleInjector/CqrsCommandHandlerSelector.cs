@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using SimpleInjector;
-using SimpleInjector.Advanced;
 using Xer.Cqrs.CommandStack;
+using Xer.Cqrs.CommandStack.Extensions.Attributes;
 using Xer.Cqrs.CommandStack.Resolvers;
-using Xer.Delegator.Registrations;
+using Xer.Delegator.Registration;
 using Xer.Delegator.Resolvers;
 
 namespace Xer.Cqrs.Extensions.SimpleInjector
@@ -100,7 +100,7 @@ namespace Xer.Cqrs.Extensions.SimpleInjector
             }
 
             var singleMessageHandlerRegistration = new SingleMessageHandlerRegistration();
-            singleMessageHandlerRegistration.RegisterCommandHandlerAttributes(allTypes, _container.GetInstance);
+            singleMessageHandlerRegistration.RegisterCommandHandlersByAttribute(allTypes, _container.GetInstance);
 
             // Register resolver.
             _container.Collections.AppendTo(

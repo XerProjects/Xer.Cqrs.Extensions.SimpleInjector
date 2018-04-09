@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using SimpleInjector;
-using SimpleInjector.Advanced;
 using Xer.Cqrs.EventStack;
+using Xer.Cqrs.EventStack.Extensions.Attributes;
 using Xer.Cqrs.EventStack.Resolvers;
-using Xer.Delegator.Registrations;
+using Xer.Delegator.Registration;
 
 namespace Xer.Cqrs.Extensions.SimpleInjector
 {
@@ -85,7 +85,7 @@ namespace Xer.Cqrs.Extensions.SimpleInjector
             }
             
             var multiMessageHandlerRegistration = new MultiMessageHandlerRegistration();
-            multiMessageHandlerRegistration.RegisterEventHandlerAttributes(allTypes, _container.GetInstance);
+            multiMessageHandlerRegistration.RegisterEventHandlersByAttribute(allTypes, _container.GetInstance);
 
             // Register resolver.
             _container.Collections.AppendTo(

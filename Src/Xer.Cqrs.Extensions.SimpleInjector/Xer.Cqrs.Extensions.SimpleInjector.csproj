@@ -12,8 +12,10 @@
 
   <ItemGroup>
     <PackageReference Include="SimpleInjector" Version="4.1.1" />
-    <PackageReference Include="Xer.Cqrs.CommandStack" Version="1.0.0" />
-    <PackageReference Include="Xer.Cqrs.EventStack" Version="1.0.0" />
+    <PackageReference Include="Xer.Cqrs.CommandStack" Version="2.0.0" />
+    <PackageReference Include="Xer.Cqrs.CommandStack.Extensions.Attributes" Version="1.0.0" />
+    <PackageReference Include="Xer.Cqrs.EventStack" Version="2.0.0" />
+    <PackageReference Include="Xer.Cqrs.EventStack.Extensions.Attributes" Version="1.0.0" />
   </ItemGroup>
 
 </Project>

@@ -4,7 +4,7 @@ using System.Linq;
 using SimpleInjector;
 using Xer.Cqrs.CommandStack;
 using Xer.Cqrs.EventStack;
-using Xer.Delegator.Registrations;
+using Xer.Delegator.Registration;
 using Xer.Delegator.Resolvers;
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Xer.Cqrs.Extensions.SimpleInjector.Tests")]
