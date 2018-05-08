@@ -50,7 +50,7 @@ namespace Xer.Cqrs.Extensions.SimpleInjector
                     return new CommandDelegator(CompositeMessageHandlerResolver.Compose(resolverArray));
                 }
                 
-                return new CommandDelegator(new SingleMessageHandlerRegistration().BuildMessageHandlerResolver());
+                return new CommandDelegator(NullMessageHandlerDelegateResolver.Instance);
             });
 
             return this;
@@ -79,7 +79,7 @@ namespace Xer.Cqrs.Extensions.SimpleInjector
                     return new EventDelegator(CompositeMessageHandlerResolver.Compose(resolverArray));
                 }
 
-                return new EventDelegator(new SingleMessageHandlerRegistration().BuildMessageHandlerResolver());
+                return new EventDelegator(NullMessageHandlerDelegateResolver.Instance);
             });
 
             return this;

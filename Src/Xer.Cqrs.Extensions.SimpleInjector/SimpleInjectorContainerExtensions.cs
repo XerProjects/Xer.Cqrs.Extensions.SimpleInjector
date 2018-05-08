@@ -8,6 +8,21 @@ namespace SimpleInjector
     {
         public static Container RegisterCqrs(this Container container, params Assembly[] assemblies)
         {
+            if (container == null)
+            {
+                throw new ArgumentNullException(nameof(container));
+            }
+
+            if (assemblies == null)
+            {
+                throw new ArgumentNullException(nameof(assemblies));
+            }
+
+            if (assemblies.Length == 0)
+            {
+                throw new ArgumentException("No assemblies were provided.", nameof(assemblies));
+            }
+            
             RegisterCqrsCore(container)
                 .RegisterCommandHandlers(select => 
                     select.ByInterface(assemblies)
