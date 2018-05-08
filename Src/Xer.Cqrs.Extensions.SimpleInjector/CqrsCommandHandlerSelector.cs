@@ -39,7 +39,7 @@ namespace Xer.Cqrs.Extensions.SimpleInjector
 
             if (assemblies.Length == 0)
             {
-                throw new ArgumentException("No assemblies were provided.", nameof(assemblies));
+                throw new ArgumentException("No command handler assemblies were provided.", nameof(assemblies));
             }
 
             IEnumerable<Assembly> distinctAssemblies = assemblies.Distinct();
@@ -82,25 +82,30 @@ namespace Xer.Cqrs.Extensions.SimpleInjector
 
             if (assemblies.Length == 0)
             {
-                throw new ArgumentException("No assemblies were provided.", nameof(assemblies));
+                throw new ArgumentException("No command handler assemblies were provided.", nameof(assemblies));
             }
             
             // Get all types that has methods marked with [CommandHandler] attribute from distinct assemblies.
-            IEnumerable<Type> allTypes = assemblies.Distinct()
-                                                   .SelectMany(assembly => assembly.GetTypes())
-                                                   .Where(type => type.IsClass &&
-                                                                  !type.IsAbstract &&
-                                                                  CommandHandlerAttributeMethod.IsFoundInType(type))
-                                                   .ToArray();
+            IEnumerable<Type> foundTypes = assemblies.Distinct()
+                                                     .SelectMany(assembly => assembly.GetTypes())
+                                                     .Where(type => type.IsClass &&
+                                                                    !type.IsAbstract &&
+                                                                    CommandHandlerAttributeMethod.IsFoundInType(type))
+                                                     .ToArray();
 
-            foreach (Type type in allTypes)
+            if (!foundTypes.Any())
+            {
+                return this;
+            }
+
+            foreach (Type type in foundTypes)
             {
                 // Register type as self.
                 _container.Register(type, type, lifeStyle);
             }
 
             var singleMessageHandlerRegistration = new SingleMessageHandlerRegistration();
-            singleMessageHandlerRegistration.RegisterCommandHandlersByAttribute(allTypes, _container.GetInstance);
+            singleMessageHandlerRegistration.RegisterCommandHandlersByAttribute(foundTypes, _container.GetInstance);
 
             // Register resolver.
             _container.Collections.AppendTo(

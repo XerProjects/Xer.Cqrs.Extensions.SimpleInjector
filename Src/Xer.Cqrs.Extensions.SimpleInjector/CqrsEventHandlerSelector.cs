@@ -36,6 +36,11 @@ namespace Xer.Cqrs.Extensions.SimpleInjector
                 throw new ArgumentNullException(nameof(assemblies));
             }
 
+            if (assemblies.Length == 0)
+            {
+                throw new ArgumentException("No event handler assemblies were provided.", nameof(assemblies));
+            }
+
             IEnumerable<Assembly> distinctAssemblies = assemblies.Distinct();
 
             _container.Register(typeof(IEventAsyncHandler<>), distinctAssemblies, lifeStyle);
@@ -69,23 +74,33 @@ namespace Xer.Cqrs.Extensions.SimpleInjector
             {
                 throw new ArgumentNullException(nameof(assemblies));
             }
+
+            if (assemblies.Length == 0)
+            {
+                throw new ArgumentException("No event handler assemblies were provided.", nameof(assemblies));
+            }
             
             // Get all types that has methods marked with [EventHandler] attribute from distinct assemblies.
-            IEnumerable<Type> allTypes = assemblies.Distinct()
-                                                   .SelectMany(assembly => assembly.GetTypes())
-                                                   .Where(type => type.IsClass &&
-                                                                  !type.IsAbstract &&
-                                                                  EventHandlerAttributeMethod.IsFoundInType(type))
-                                                   .ToArray();
+            IEnumerable<Type> foundTypes = assemblies.Distinct()
+                                                      .SelectMany(assembly => assembly.GetTypes())
+                                                      .Where(type => type.IsClass &&
+                                                                     !type.IsAbstract &&
+                                                                     EventHandlerAttributeMethod.IsFoundInType(type))
+                                                      .ToArray();
 
-            foreach (Type type in allTypes)
+            if (!foundTypes.Any())
+            {
+                return this;
+            }
+
+            foreach (Type type in foundTypes)
             {
                 // Register type as self.
                 _container.Register(type, type, lifeStyle);
             }
             
             var multiMessageHandlerRegistration = new MultiMessageHandlerRegistration();
-            multiMessageHandlerRegistration.RegisterEventHandlersByAttribute(allTypes, _container.GetInstance);
+            multiMessageHandlerRegistration.RegisterEventHandlersByAttribute(foundTypes, _container.GetInstance);
 
             // Register resolver.
             _container.Collections.AppendTo(

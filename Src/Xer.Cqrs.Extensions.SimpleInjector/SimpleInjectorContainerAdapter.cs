@@ -17,6 +17,7 @@ namespace Xer.Cqrs.Extensions.SimpleInjector
         public SimpleInjectorContainerAdapter(Container container)
         {
             // Cast to IServiceProvider so that container will not throw if type is not registered.
+            // This is done so that when used in CompositeMessageHandlerResolver, container will not throw.
             _serviceProvider = container;
         }
 
